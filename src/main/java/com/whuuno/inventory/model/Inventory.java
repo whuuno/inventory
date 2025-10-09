@@ -1,8 +1,10 @@
 package com.whuuno.inventory.model;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "inventory")
@@ -15,10 +17,13 @@ public class Inventory {
     @Schema(description = "Unique identifier of the product", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
+    @NotBlank(message = "Product name is required")
     @Column(name = "product_name", nullable = false, length = 255)
     @Schema(description = "Name of the product", example = "Laptop", required = true)
     private String pdtName;
 
+    @NotNull(message = "Quantity is required")
+    @Min(value = 0, message = "Quantity must be non-negative")
     @Column(name = "quantity", nullable = false)
     @Schema(description = "Available quantity of the product", example = "50", required = true)
     private Integer quantity;

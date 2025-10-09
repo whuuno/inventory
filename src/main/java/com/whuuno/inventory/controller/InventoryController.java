@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,7 +100,7 @@ public class InventoryController {
                     description = "Inventory item to create",
                     required = true,
                     content = @Content(schema = @Schema(implementation = Inventory.class)))
-            @RequestBody Inventory inventory){
+            @RequestBody @Valid Inventory inventory){
         Inventory createdInventory = inventoryService.createInventory(inventory);
         return new ResponseEntity<>(createdInventory, HttpStatus.CREATED);
     }
@@ -136,7 +137,7 @@ public class InventoryController {
             description = "Updated inventory item data",
             required = true,
             content = @Content(schema = @Schema(implementation = Inventory.class)))
-            @RequestBody Inventory inventory){
+            @RequestBody @Valid Inventory inventory){
         Inventory updatedInventory = inventoryService.updateInventory(id, inventory);
         return ResponseEntity.ok(updatedInventory);
     }
