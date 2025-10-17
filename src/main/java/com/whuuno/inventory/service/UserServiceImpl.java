@@ -4,6 +4,9 @@ import com.whuuno.inventory.dao.UserDAO;
 import com.whuuno.inventory.exception.ResourceNotFoundException;
 import com.whuuno.inventory.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
+    @CacheEvict(value = {"user-cache", "userdetails-cache"}, allEntries = true)
     public User registerUser(User user) {
         // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -26,6 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "user-cache", key = "#username", unless = "#result == null")
     public User findByUsername(String username) {
         return userDAO.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException(
